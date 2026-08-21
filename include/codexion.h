@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/20 19:41:40 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 10:03:30 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <limits.h>
+# include <sys/time.h>
 
 typedef struct s_simulation	t_simulation;
 
@@ -77,12 +78,23 @@ typedef struct s_simulation
 	t_config		config;
 	t_coder			*coders;
 	t_dongle		*dongles;
+	int				dongles_initialized;
 	long long		start_time;
 }	t_simulation;
 
-int	parse_args(int argc, char **argv, t_config *config);
-int	parse_positive_ll(char *str, long long *value);
-int	parse_positive_int(char *str, int *value);
-int	parse_scheduler(char *str, t_scheduler *scheduler);
+/**** Parsing ****/
+int			parse_args(int argc, char **argv, t_config *config);
+int			parse_positive_ll(char *str, long long *value);
+int			parse_positive_int(char *str, int *value);
+int			parse_scheduler(char *str, t_scheduler *scheduler);
+
+/**** Initialization ****/
+int			init_dongles(t_simulation *simulation);
+int			init_coders(t_simulation *simulation);
+int			init_simulation(t_simulation *simulation, t_config config);
+void		destroy_simulation(t_simulation *simulation);
+
+/**** Helpers ****/
+long long	get_time_ms(void);
 
 #endif

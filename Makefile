@@ -1,8 +1,9 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
 SRCS =	src/main.c \
-		src/parsing_utils.c \
-		src/parsing.c
+		src/parsing.c \
+		src/init_simulation.c \
+		src/utils.c
 OBJS = $(SRCS:.c=.o)
 NAME = codexion
 

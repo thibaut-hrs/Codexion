@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 19:00:04 by thours            #+#    #+#             */
-/*   Updated: 2026/08/20 19:33:34 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 10:02:25 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ int main(int argc, char **argv)
         printf("Error during parsing\n");
     else
         printf("Parsing succes\n");
-
-    free (config);
+    t_simulation *simulation = malloc(sizeof(t_simulation));
+    init_simulation(simulation, *config);
+    free(config);
+    free(simulation);
     
     return (0);
 }

@@ -1,0 +1,104 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_simulation.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/21 08:55:52 by thours            #+#    #+#             */
+/*   Updated: 2026/08/21 09:54:59 by thours           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/codexion.h"
+
+int	init_simulation(t_simulation *simulation, t_config config)
+{
+	simulation->config = config;
+	simulation->coders = NULL;
+	simulation->dongles = NULL;
+	simulation->dongles_initialized = 0;
+	simulation->start_time = get_time_ms();
+	if (!init_dongles(simulation))
+	{
+		destroy_simulation(simulation);
+		return (0);
+	}
+	if (!init_coders(simulation))
+	{
+		destroy_simulation(simulation);
+		return (0);
+	}
+	return (1);
+}
+
+int	init_dongles(t_simulation *simulation)
+{
+	int	i;
+
+	simulation->dongles = malloc(
+		sizeof(t_dongle) * simulation->config.number_of_coders
+	);
+	if (!simulation->dongles)
+		return (0);
+	simulation->dongles_initialized = 0;
+	i = 0;
+	while (i < simulation->config.number_of_coders)
+	{
+		if (pthread_mutex_init(&simulation->dongles[i].mutex, NULL) != 0)
+			return (0);
+		simulation->dongles[i].id = i + 1;
+		simulation->dongles[i].state = DONGLE_FREE;
+		simulation->dongles_initialized++;
+		i++;
+	}
+	return (1);
+}
+
+int	init_coders(t_simulation *simulation)
+{
+	int	i;
+	
+	simulation->coders = malloc(
+		sizeof(t_coder) * simulation->config.number_of_coders
+	);
+	if (!simulation->coders)
+		return (0);
+	i = 0;
+	while (i < simulation->config.number_of_coders)
+	{
+		simulation->coders[i].id = i + 1;
+		simulation->coders[i].state = STATE_DEBUGGING;
+		simulation->coders[i].left_dongle = &simulation->dongles[i];
+		simulation->coders[i].right_dongle = &simulation->dongles[
+			(i + 1) % simulation->config.number_of_coders
+		];
+		simulation->coders[i].last_compile_start = 0;
+		simulation->coders[i].compile_count = 0;
+		simulation->coders[i].simulation = simulation;
+		i++;
+	}
+	return (1);
+}
+
+void	destroy_simulation(t_simulation *simulation)
+{
+	int	i;
+
+	if (simulation->dongles)
+	{
+		i = 0;
+		while (i < simulation->dongles_initialized)
+		{
+			pthread_mutex_destroy(&simulation->dongles[i].mutex);
+			i++;
+		}
+		free(simulation->dongles);
+		simulation->dongles = NULL;
+	}
+	if (simulation->coders)
+	{
+		free(simulation->coders);
+		simulation->coders = NULL;
+	}
+}
