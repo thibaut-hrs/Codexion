@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 10:03:30 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 10:40:02 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ typedef struct s_simulation
 	t_dongle		*dongles;
 	int				dongles_initialized;
 	long long		start_time;
+	int				threads_created;
 }	t_simulation;
 
 /**** Parsing ****/
@@ -93,6 +94,11 @@ int			init_dongles(t_simulation *simulation);
 int			init_coders(t_simulation *simulation);
 int			init_simulation(t_simulation *simulation, t_config config);
 void		destroy_simulation(t_simulation *simulation);
+
+/**** Coders ****/
+void		*coder_routine(void *arg);
+int			start_simulation(t_simulation *simulation);
+int			join_threads(t_simulation *simulation);
 
 /**** Helpers ****/
 long long	get_time_ms(void);

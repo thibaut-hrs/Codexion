@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 19:00:04 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 10:02:25 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 10:43:19 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,23 @@ int main(int argc, char **argv)
     else
         printf("Parsing succes\n");
     t_simulation *simulation = malloc(sizeof(t_simulation));
-    init_simulation(simulation, *config);
+    if (init_simulation(simulation, *config))
+    {
+        printf("Number of coders: %d\n", config->number_of_coders);
+        if (!start_simulation(simulation))
+        {
+            printf("Error creating threads\n");
+            destroy_simulation(simulation);
+            return (1);
+        }
+        printf("Threads created: %d\n", simulation->threads_created);
+        if (!join_threads(simulation))
+        {
+            printf("Error joining threads\n");
+            destroy_simulation(simulation);
+            return (1);
+        }
+    }
     free(config);
     free(simulation);
     
