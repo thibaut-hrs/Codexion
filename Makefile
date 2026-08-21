@@ -4,6 +4,7 @@ SRCS =	src/main.c \
 		src/parsing.c \
 		src/init_simulation.c \
 		src/coder.c \
+		src/monitor.c \
 		src/utils.c
 OBJS = $(SRCS:.c=.o)
 NAME = codexion

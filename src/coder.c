@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 10:17:34 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 11:53:58 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 12:50:12 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*coder_routine(void *arg)
 void	coder_debug(t_coder *coder)
 {
 	coder->state = STATE_DEBUGGING;
-	printf("%llu %d is debugging\n",
+	printf("%lld %d is debugging\n",
 		get_time_ms() - coder->simulation->start_time, coder->id);
 	usleep(coder->simulation->config.time_to_debug * 1000);
 }
@@ -41,7 +41,7 @@ void	coder_debug(t_coder *coder)
 void	coder_refactor(t_coder *coder)
 {
 	coder->state = STATE_REFACTORING;
-	printf("%llu %d is refactoring\n",
+	printf("%lld %d is refactoring\n",
 		get_time_ms() - coder->simulation->start_time, coder->id);
 	usleep(coder->simulation->config.time_to_refactor * 1000);
 }
@@ -49,17 +49,28 @@ void	coder_refactor(t_coder *coder)
 void	coder_compile(t_coder *coder)
 {
 	coder->state = STATE_COMPILING;
-	printf("%llu %d is compiling\n",
+	set_last_compile_start(coder, get_time_ms());
+	printf("%lld %d is compiling\n",
 		get_time_ms() - coder->simulation->start_time, coder->id);
 	usleep(coder->simulation->config.time_to_compile * 1000);
-	if (coder->id == 1)
-		set_simulation_finished(coder->simulation, 1);
+	coder->compile_count++;
+}
+
+void	set_last_compile_start(t_coder *coder, long long time)
+{
+	pthread_mutex_lock(&coder->simulation->state_mutex);
+    coder->last_compile_start = time;
+    pthread_mutex_unlock(&coder->simulation->state_mutex);
 }
 
 int	start_simulation(t_simulation *simulation)
 {
 	int	i;
 
+	if (pthread_create(&simulation->monitor_thread,
+		NULL, monitor_routine, simulation) != 0)
+	return (0);
+	simulation->monitor_created = 1;
 	i = 0;
 	while (i < simulation->config.number_of_coders)
 	{
@@ -85,6 +96,11 @@ int	join_threads(t_simulation *simulation)
 		if (pthread_join(simulation->coders[i].thread, NULL) != 0)
 			return (0);
 		i++;
+	}
+	if (simulation->monitor_created)
+	{
+		if (pthread_join(simulation->monitor_thread, NULL) != 0)
+			return (0);
 	}
 	return (1);
 }

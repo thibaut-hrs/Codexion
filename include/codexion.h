@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 11:33:30 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 12:40:26 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ typedef struct s_simulation
 	t_config		config;
 	t_coder			*coders;
 	t_dongle		*dongles;
+	pthread_t		monitor_thread;
+	int				monitor_created;
 	pthread_mutex_t	state_mutex;
 	int				state_mutex_initialized;
 	int				finished;
@@ -106,6 +108,12 @@ void		coder_refactor(t_coder *coder);
 void		coder_compile(t_coder *coder);
 int			start_simulation(t_simulation *simulation);
 int			join_threads(t_simulation *simulation);
+
+/**** Simulation monitoring ****/
+void		*monitor_routine(void *arg);
+long long	get_last_compile_start(t_coder *coder);
+void		set_last_compile_start(t_coder *coder, long long time);
+int			coder_has_burned_out(t_coder *coder);
 
 /**** Helpers ****/
 long long	get_time_ms(void);

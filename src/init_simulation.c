@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 08:55:52 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 12:00:46 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 12:41:06 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	init_simulation(t_simulation *simulation, t_config config)
 	simulation->config = config;
 	simulation->coders = NULL;
 	simulation->dongles = NULL;
+	simulation->monitor_created = 0;
 	simulation->dongles_initialized = 0;
 	simulation->start_time = get_time_ms();
 	simulation->threads_created = 0;
