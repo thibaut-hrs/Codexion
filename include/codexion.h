@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 10:40:02 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 11:33:30 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <limits.h>
 # include <sys/time.h>
+# include <unistd.h>
 
 typedef struct s_simulation	t_simulation;
 
@@ -78,9 +79,12 @@ typedef struct s_simulation
 	t_config		config;
 	t_coder			*coders;
 	t_dongle		*dongles;
+	pthread_mutex_t	state_mutex;
+	int				state_mutex_initialized;
+	int				finished;
+	int				threads_created;
 	int				dongles_initialized;
 	long long		start_time;
-	int				threads_created;
 }	t_simulation;
 
 /**** Parsing ****/
@@ -97,10 +101,15 @@ void		destroy_simulation(t_simulation *simulation);
 
 /**** Coders ****/
 void		*coder_routine(void *arg);
+void		coder_debug(t_coder *coder);
+void		coder_refactor(t_coder *coder);
+void		coder_compile(t_coder *coder);
 int			start_simulation(t_simulation *simulation);
 int			join_threads(t_simulation *simulation);
 
 /**** Helpers ****/
 long long	get_time_ms(void);
+int			get_simulation_finished(t_simulation *simulation);
+void		set_simulation_finished(t_simulation *simulation, int value);
 
 #endif

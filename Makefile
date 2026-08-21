@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=address
 SRCS =	src/main.c \
 		src/parsing.c \
 		src/init_simulation.c \

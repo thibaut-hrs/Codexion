@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 08:55:52 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 10:31:14 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 12:00:46 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@ int	init_simulation(t_simulation *simulation, t_config config)
 	simulation->dongles_initialized = 0;
 	simulation->start_time = get_time_ms();
 	simulation->threads_created = 0;
+	simulation->finished = 0;
+	if (pthread_mutex_init(&simulation->state_mutex, NULL) != 0)
+		return (simulation->state_mutex_initialized = 0, 0);
+	simulation->state_mutex_initialized = 1;
 	if (!init_dongles(simulation))
 	{
 		destroy_simulation(simulation);
@@ -74,7 +78,7 @@ int	init_coders(t_simulation *simulation)
 		simulation->coders[i].right_dongle = &simulation->dongles[
 			(i + 1) % simulation->config.number_of_coders
 		];
-		simulation->coders[i].last_compile_start = 0;
+		simulation->coders[i].last_compile_start = simulation->start_time;
 		simulation->coders[i].compile_count = 0;
 		simulation->coders[i].simulation = simulation;
 		i++;
@@ -86,6 +90,11 @@ void	destroy_simulation(t_simulation *simulation)
 {
 	int	i;
 
+	if (simulation->state_mutex_initialized)
+	{
+		pthread_mutex_destroy(&simulation->state_mutex);
+		simulation->state_mutex_initialized = 0;
+	}
 	if (simulation->dongles)
 	{
 		i = 0;
