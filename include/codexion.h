@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 12:40:26 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/21 14:56:52 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,14 +106,17 @@ void		*coder_routine(void *arg);
 void		coder_debug(t_coder *coder);
 void		coder_refactor(t_coder *coder);
 void		coder_compile(t_coder *coder);
+void		set_last_compile_start(t_coder *coder, long long time);
+void		increment_compile_count(t_coder *coder);
 int			start_simulation(t_simulation *simulation);
 int			join_threads(t_simulation *simulation);
 
 /**** Simulation monitoring ****/
 void		*monitor_routine(void *arg);
 long long	get_last_compile_start(t_coder *coder);
-void		set_last_compile_start(t_coder *coder, long long time);
+int			get_compile_count(t_coder *coder);
 int			coder_has_burned_out(t_coder *coder);
+int			all_coders_finished(t_simulation *simulation);
 
 /**** Helpers ****/
 long long	get_time_ms(void);
