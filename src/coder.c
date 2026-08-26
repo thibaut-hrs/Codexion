@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 10:17:34 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 14:54:36 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/26 19:08:19 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ void	coder_compile(t_coder *coder)
 void	set_last_compile_start(t_coder *coder, long long time)
 {
 	pthread_mutex_lock(&coder->simulation->state_mutex);
-    coder->last_compile_start = time;
-    pthread_mutex_unlock(&coder->simulation->state_mutex);
+	coder->last_compile_start = time;
+	pthread_mutex_unlock(&coder->simulation->state_mutex);
 }
 
 void	increment_compile_count(t_coder *coder)
@@ -75,8 +75,8 @@ int	start_simulation(t_simulation *simulation)
 	int	i;
 
 	if (pthread_create(&simulation->monitor_thread,
-		NULL, monitor_routine, simulation) != 0)
-	return (0);
+			NULL, monitor_routine, simulation) != 0)
+		return (0);
 	simulation->monitor_created = 1;
 	i = 0;
 	while (i < simulation->config.number_of_coders)

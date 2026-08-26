@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 14:56:52 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/26 20:36:41 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ typedef enum e_dongle_state
 
 typedef struct s_config
 {
-	int		    number_of_coders;
+	int			number_of_coders;
 	long long	time_to_burnout;
 	long long	time_to_compile;
 	long long	time_to_debug;
 	long long	time_to_refactor;
-	int		    number_of_compiles_required;
+	int			number_of_compiles_required;
 	long long	dongle_cooldown;
-	t_scheduler scheduler;
+	t_scheduler	scheduler;
 }	t_config;
 
 typedef struct s_dongle
@@ -60,6 +60,8 @@ typedef struct s_dongle
 	int				id;
 	t_dongle_state	state;
 	pthread_mutex_t	mutex;
+	pthread_cond_t	cond;
+	int				cond_initialized;
 }	t_dongle;
 
 typedef struct s_coder
@@ -71,22 +73,40 @@ typedef struct s_coder
 	t_dongle		*right_dongle;
 	long long		last_compile_start;
 	int				compile_count;
-    t_simulation	*simulation;
+	t_simulation	*simulation;
 }	t_coder;
+
+typedef struct s_request
+{
+	t_coder			*coder;
+	long long		order;
+	long long		deadline;
+}	t_request;
+
+typedef struct s_priority_queue
+{
+	t_request		*requests;
+	int				size;
+	int				capacity;
+	t_scheduler		scheduler;
+}	t_priority_queue;
 
 typedef struct s_simulation
 {
-	t_config		config;
-	t_coder			*coders;
-	t_dongle		*dongles;
-	pthread_t		monitor_thread;
-	int				monitor_created;
-	pthread_mutex_t	state_mutex;
-	int				state_mutex_initialized;
-	int				finished;
-	int				threads_created;
-	int				dongles_initialized;
-	long long		start_time;
+	t_config			config;
+	t_coder				*coders;
+	t_dongle			*dongles;
+	pthread_t			monitor_thread;
+	int					monitor_created;
+	pthread_mutex_t		state_mutex;
+	int					state_mutex_initialized;
+	int					finished;
+	int					threads_created;
+	int					dongles_initialized;
+	long long			start_time;
+	t_priority_queue	queue;
+	pthread_mutex_t		queue_mutex;
+	long long			request_counter;
 }	t_simulation;
 
 /**** Parsing ****/
@@ -100,6 +120,7 @@ int			init_dongles(t_simulation *simulation);
 int			init_coders(t_simulation *simulation);
 int			init_simulation(t_simulation *simulation, t_config config);
 void		destroy_simulation(t_simulation *simulation);
+void		destroy_dongles(t_simulation *simulation);
 
 /**** Coders ****/
 void		*coder_routine(void *arg);
@@ -122,5 +143,14 @@ int			all_coders_finished(t_simulation *simulation);
 long long	get_time_ms(void);
 int			get_simulation_finished(t_simulation *simulation);
 void		set_simulation_finished(t_simulation *simulation, int value);
+
+/**** Scheduler ****/
+int			request_has_priority(t_priority_queue *queue, t_request *a,
+				t_request *b);
+
+/**** Heap operations ****/
+void		heap_swap(t_request *a, t_request *b);
+void		heap_up(t_priority_queue *queue, int index);
+void		heap_down(t_priority_queue *queue, int index);
 
 #endif

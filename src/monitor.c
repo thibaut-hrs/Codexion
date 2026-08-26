@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 12:01:55 by thours            #+#    #+#             */
-/*   Updated: 2026/08/21 14:59:52 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/26 19:11:51 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*monitor_routine(void *arg)
 			}
 			i++;
 		}
-        if (all_coders_finished(simulation))
+		if (all_coders_finished(simulation))
 			return (set_simulation_finished(simulation, 1), NULL);
 		usleep(1000);
 	}
@@ -42,12 +42,12 @@ void	*monitor_routine(void *arg)
 
 long long	get_last_compile_start(t_coder *coder)
 {
-    long long   last_compile_start;
+	long long	last_compile_start;
 
-    pthread_mutex_lock(&coder->simulation->state_mutex);
-    last_compile_start = coder->last_compile_start;
-    pthread_mutex_unlock(&coder->simulation->state_mutex);
-    return (last_compile_start);
+	pthread_mutex_lock(&coder->simulation->state_mutex);
+	last_compile_start = coder->last_compile_start;
+	pthread_mutex_unlock(&coder->simulation->state_mutex);
+	return (last_compile_start);
 }
 
 int	get_compile_count(t_coder *coder)
