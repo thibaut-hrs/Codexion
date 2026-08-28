@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 08:55:52 by thours            #+#    #+#             */
-/*   Updated: 2026/08/26 19:11:25 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/28 22:23:17 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,38 +92,25 @@ int	init_coders(t_simulation *simulation)
 	return (1);
 }
 
-void	destroy_simulation(t_simulation *simulation)
-{
-	if (simulation->state_mutex_initialized)
-	{
-		pthread_mutex_destroy(&simulation->state_mutex);
-		simulation->state_mutex_initialized = 0;
-	}
-	if (simulation->dongles)
-		destroy_dongles(simulation);
-	if (simulation->coders)
-	{
-		free(simulation->coders);
-		simulation->coders = NULL;
-	}
-}
-
-void	destroy_dongles(t_simulation *simulation)
+int	start_simulation(t_simulation *simulation)
 {
 	int	i;
 
+	if (pthread_create(&simulation->monitor_thread,
+			NULL, monitor_routine, simulation) != 0)
+		return (0);
+	simulation->monitor_created = 1;
 	i = 0;
-	while (i < simulation->dongles_initialized)
+	while (i < simulation->config.number_of_coders)
 	{
-		if (simulation->dongles[i].cond_initialized)
-		{
-			pthread_cond_destroy(&simulation->dongles[i].cond);
-			simulation->dongles[i].cond_initialized = 0;
-		}
-		pthread_mutex_destroy(&simulation->dongles[i].mutex);
+		if (pthread_create(
+				&simulation->coders[i].thread,
+				NULL,
+				coder_routine,
+				&simulation->coders[i]) != 0)
+			return (0);
+		simulation->threads_created++;
 		i++;
 	}
-	free(simulation->dongles);
-	simulation->dongles = NULL;
-	simulation->dongles_initialized = 0;
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/28 17:50:32 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/28 22:32:29 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ typedef struct s_coder
 typedef struct s_request
 {
 	t_coder			*coder;
-	long long		order;
+	int				order;
 	long long		deadline;
 }	t_request;
 
@@ -91,6 +91,7 @@ typedef struct s_priority_queue
 	int				size;
 	int				capacity;
 	t_scheduler		scheduler;
+	pthread_mutex_t	mutex;
 }	t_priority_queue;
 
 typedef struct s_simulation
@@ -121,18 +122,24 @@ int			parse_scheduler(char *str, t_scheduler *scheduler);
 int			init_dongles(t_simulation *simulation);
 int			init_coders(t_simulation *simulation);
 int			init_simulation(t_simulation *simulation, t_config config);
+int			start_simulation(t_simulation *simulation);
+
+/**** Destroy simulation ****/
 void		destroy_simulation(t_simulation *simulation);
 void		destroy_dongles(t_simulation *simulation);
+int			join_threads(t_simulation *simulation);
 
 /**** Coders ****/
 void		*coder_routine(void *arg);
 void		coder_debug(t_coder *coder);
 void		coder_refactor(t_coder *coder);
 void		coder_compile(t_coder *coder);
+
+/*** Coders utils ****/
 void		set_last_compile_start(t_coder *coder, long long time);
 void		increment_compile_count(t_coder *coder);
-int			start_simulation(t_simulation *simulation);
 int			join_threads(t_simulation *simulation);
+int			coder_can_compile(t_coder *coder);
 
 /**** Simulation monitoring ****/
 void		*monitor_routine(void *arg);
@@ -154,6 +161,7 @@ int			request_has_priority(t_priority_queue *queue, t_request *a,
 int			queue_init(t_priority_queue *queue, t_scheduler scheduler);
 int			queue_grow(t_priority_queue *queue);
 int			queue_push(t_priority_queue *queue, t_request request);
+int			queue_pop(t_priority_queue *queue, t_request *request);
 void		queue_destroy(t_priority_queue *queue);
 
 /**** Heap operations ****/
