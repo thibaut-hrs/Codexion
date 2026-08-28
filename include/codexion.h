@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/26 20:36:41 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/28 14:28:46 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <limits.h>
 # include <sys/time.h>
 # include <unistd.h>
+
+# define INITIAL_QUEUE_CAPACITY 16
 
 typedef struct s_simulation	t_simulation;
 
@@ -152,5 +154,6 @@ int			request_has_priority(t_priority_queue *queue, t_request *a,
 void		heap_swap(t_request *a, t_request *b);
 void		heap_up(t_priority_queue *queue, int index);
 void		heap_down(t_priority_queue *queue, int index);
+int			queue_init(t_priority_queue *queue, t_scheduler scheduler);
 
 #endif

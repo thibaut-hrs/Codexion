@@ -6,11 +6,22 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 19:33:13 by thours            #+#    #+#             */
-/*   Updated: 2026/08/26 20:53:41 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/28 14:36:24 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
+
+int	queue_init(t_priority_queue *queue, t_scheduler scheduler)
+{
+	queue->size = 0;
+	queue->capacity = INITIAL_QUEUE_CAPACITY;
+	queue->scheduler = scheduler;
+	queue->requests = malloc(sizeof(t_request) * queue->capacity);
+	if (!queue->requests)
+		return (0);
+	return (1);
+}
 
 void	heap_swap(t_request *a, t_request *b)
 {
