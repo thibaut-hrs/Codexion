@@ -7,6 +7,7 @@ SRCS =	src/main.c \
 		src/monitor.c \
 		src/scheduler.c \
 		src/heap_operations.c \
+		src/queue_operations.c \
 		src/utils.c
 OBJS = $(SRCS:.c=.o)
 NAME = codexion

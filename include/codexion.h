@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/28 14:28:46 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/28 17:50:32 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,10 +150,15 @@ void		set_simulation_finished(t_simulation *simulation, int value);
 int			request_has_priority(t_priority_queue *queue, t_request *a,
 				t_request *b);
 
+/**** Queue operations ****/
+int			queue_init(t_priority_queue *queue, t_scheduler scheduler);
+int			queue_grow(t_priority_queue *queue);
+int			queue_push(t_priority_queue *queue, t_request request);
+void		queue_destroy(t_priority_queue *queue);
+
 /**** Heap operations ****/
 void		heap_swap(t_request *a, t_request *b);
 void		heap_up(t_priority_queue *queue, int index);
 void		heap_down(t_priority_queue *queue, int index);
-int			queue_init(t_priority_queue *queue, t_scheduler scheduler);
 
 #endif
