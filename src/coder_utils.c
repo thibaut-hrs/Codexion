@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 22:26:47 by thours            #+#    #+#             */
-/*   Updated: 2026/08/28 22:32:08 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/29 11:45:22 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,3 @@ void	increment_compile_count(t_coder *coder)
 	coder->compile_count++;
 	pthread_mutex_unlock(&coder->simulation->state_mutex);
 }
-
-int	coder_can_compile(t_coder *coder);

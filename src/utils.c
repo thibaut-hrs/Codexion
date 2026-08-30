@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 09:57:19 by thours            #+#    #+#             */
-/*   Updated: 2026/08/26 19:13:07 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/29 11:21:55 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,22 @@ int	get_simulation_finished(t_simulation *simulation)
 	return (finished);
 }
 
-void	set_simulation_finished(t_simulation *simulation, int value)
+long long	get_last_compile_start(t_coder *coder)
 {
-	pthread_mutex_lock(&simulation->state_mutex);
-	simulation->finished = value;
-	pthread_mutex_unlock(&simulation->state_mutex);
+	long long	last_compile_start;
+
+	pthread_mutex_lock(&coder->simulation->state_mutex);
+	last_compile_start = coder->last_compile_start;
+	pthread_mutex_unlock(&coder->simulation->state_mutex);
+	return (last_compile_start);
+}
+
+int	get_compile_count(t_coder *coder)
+{
+	int	compile_count;
+
+	pthread_mutex_lock(&coder->simulation->state_mutex);
+	compile_count = coder->compile_count;
+	pthread_mutex_unlock(&coder->simulation->state_mutex);
+	return (compile_count);
 }

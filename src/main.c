@@ -6,113 +6,36 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 19:00:04 by thours            #+#    #+#             */
-/*   Updated: 2026/08/28 21:57:41 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/30 13:21:54 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
 
-static void	print_request(t_request *request)
+int	main(int argc, char **argv)
 {
-	printf("Coder %d | order: %d | deadline: %lld\n",
-		request->coder->id,
-		request->order,
-		request->deadline);
-}
+	t_config		config;
+	t_simulation	simulation;
 
-static t_request	create_request(t_coder *coder, int order, long long deadline)
-{
-	t_request	request;
-
-	request.coder = coder;
-	request.order = order;
-	request.deadline = deadline;
-	return (request);
-}
-
-static void	print_heap(t_priority_queue *queue)
-{
-	int	i;
-
-	i = 0;
-	while (i < queue->size)
+	if (!parse_args(argc, argv, &config))
 	{
-		printf("[%d] coder %d | order %d | deadline %lld\n",
-			i,
-			queue->requests[i].coder->id,
-			queue->requests[i].order,
-			queue->requests[i].deadline);
-		i++;
+		printf("ERROR: Invalid input\n");
+		return (1);
 	}
-}
-
-static void	test_fifo(void)
-{
-	t_priority_queue	queue;
-	t_coder			coders[6];
-	t_request		request;
-	int				i;
-
-	printf("\n===== FIFO =====\n");
-
-	i = 0;
-	while (i < 5)
+	if (!init_simulation(&simulation, config))
 	{
-		coders[i].id = i + 1;
-		i++;
+		printf("ERROR: failed to create the simulation\n");
+		return (1);
 	}
-
-	queue_init(&queue, SCHEDULER_FIFO);
-
-	queue_push(&queue, create_request(&coders[2], 3, 300));
-	queue_push(&queue, create_request(&coders[0], 1, 500));
-	queue_push(&queue, create_request(&coders[4], 5, 100));
-	queue_push(&queue, create_request(&coders[1], 2, 200));
-	queue_push(&queue, create_request(&coders[3], 4, 400));
-
-	while (queue_pop(&queue, &request))
+	if (!start_simulation(&simulation))
 	{
-		print_request(&request);
+		printf("ERROR: failed to start the simulation\n");
+		destroy_simulation(&simulation);
+		return (1);
 	}
-
-	queue_destroy(&queue);
-}
-
-static void	test_edf(void)
-{
-	t_priority_queue	queue;
-	t_coder			coders[6];
-	t_request		request;
-	int				i;
-
-	printf("\n===== EDF =====\n");
-
-	i = 0;
-	while (i < 5)
-	{
-		coders[i].id = i + 1;
-		i++;
-	}
-
-	queue_init(&queue, SCHEDULER_EDF);
-
-	queue_push(&queue, create_request(&coders[2], 3, 300));
-	queue_push(&queue, create_request(&coders[5], 6, 300));
-	queue_push(&queue, create_request(&coders[0], 1, 500));
-	queue_push(&queue, create_request(&coders[4], 5, 100));
-	queue_push(&queue, create_request(&coders[1], 2, 200));
-	queue_push(&queue, create_request(&coders[3], 4, 400));
-
-	print_heap(&queue);
-	while (queue_pop(&queue, &request))
-		print_request(&request);
-
-	queue_destroy(&queue);
-}
-
-int	main(void)
-{
-	test_fifo();
-	test_edf();
+	join_threads(&simulation);
+	if (all_coders_finished(&simulation))
+		printf("Simulation succesfully ended without burn out !\n");
+	destroy_simulation(&simulation);
 	return (0);
 }

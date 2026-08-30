@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 12:01:55 by thours            #+#    #+#             */
-/*   Updated: 2026/08/26 19:11:51 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/30 13:12:43 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,31 +33,14 @@ void	*monitor_routine(void *arg)
 			}
 			i++;
 		}
+		update_dongle_cooldown(simulation->dongles, simulation);
 		if (all_coders_finished(simulation))
+		{
 			return (set_simulation_finished(simulation, 1), NULL);
+		}
 		usleep(1000);
 	}
 	return (NULL);
-}
-
-long long	get_last_compile_start(t_coder *coder)
-{
-	long long	last_compile_start;
-
-	pthread_mutex_lock(&coder->simulation->state_mutex);
-	last_compile_start = coder->last_compile_start;
-	pthread_mutex_unlock(&coder->simulation->state_mutex);
-	return (last_compile_start);
-}
-
-int	get_compile_count(t_coder *coder)
-{
-	int	compile_count;
-
-	pthread_mutex_lock(&coder->simulation->state_mutex);
-	compile_count = coder->compile_count;
-	pthread_mutex_unlock(&coder->simulation->state_mutex);
-	return (compile_count);
 }
 
 int	coder_has_burned_out(t_coder *coder)
@@ -69,6 +52,25 @@ int	coder_has_burned_out(t_coder *coder)
 	last_compile_start = get_last_compile_start(coder);
 	return (now - last_compile_start
 		>= coder->simulation->config.time_to_burnout);
+}
+
+void	update_dongle_cooldown(t_dongle *dongles, t_simulation *simulation)
+{
+	int	i;
+
+	pthread_mutex_lock(&simulation->state_mutex);
+	i = 0;
+	while (i < simulation->config.number_of_coders)
+	{
+		if (dongles[i].state == DONGLE_COOLDOWN
+			&& dongles[i].cooldown_until <= get_time_ms())
+		{
+			dongles[i].state = DONGLE_FREE;
+			pthread_cond_broadcast(&simulation->state_cond);
+		}
+		i++;
+	}
+	pthread_mutex_unlock(&simulation->state_mutex);
 }
 
 int	all_coders_finished(t_simulation *simulation)
@@ -84,4 +86,12 @@ int	all_coders_finished(t_simulation *simulation)
 		i++;
 	}
 	return (1);
+}
+
+void	set_simulation_finished(t_simulation *simulation, int value)
+{
+	pthread_mutex_lock(&simulation->state_mutex);
+	simulation->finished = value;
+	pthread_cond_broadcast(&simulation->state_cond);
+	pthread_mutex_unlock(&simulation->state_mutex);
 }

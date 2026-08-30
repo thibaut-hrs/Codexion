@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 17:55:49 by thours            #+#    #+#             */
-/*   Updated: 2026/08/28 17:55:50 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/29 22:15:43 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,10 @@ int	queue_push(t_priority_queue *queue, t_request request)
 	return (1);
 }
 
-int	queue_pop(t_priority_queue *queue, t_request *request)
+int	queue_pop(t_priority_queue *queue)
 {
 	if (queue->size == 0)
 		return (0);
-	*request = queue->requests[0];
 	queue->requests[0] = queue->requests[queue->size - 1];
 	queue->size--;
 	heap_down(queue, 0);

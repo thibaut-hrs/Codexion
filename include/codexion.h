@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/28 22:32:29 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/30 12:58:51 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,7 @@ typedef struct s_dongle
 {
 	int				id;
 	t_dongle_state	state;
-	pthread_mutex_t	mutex;
-	pthread_cond_t	cond;
-	int				cond_initialized;
+	long long		cooldown_until;
 }	t_dongle;
 
 typedef struct s_coder
@@ -91,7 +89,6 @@ typedef struct s_priority_queue
 	int				size;
 	int				capacity;
 	t_scheduler		scheduler;
-	pthread_mutex_t	mutex;
 }	t_priority_queue;
 
 typedef struct s_simulation
@@ -101,6 +98,8 @@ typedef struct s_simulation
 	t_dongle			*dongles;
 	pthread_t			monitor_thread;
 	int					monitor_created;
+	pthread_cond_t		state_cond;
+	int					state_cond_initialized;
 	pthread_mutex_t		state_mutex;
 	int					state_mutex_initialized;
 	int					finished;
@@ -108,8 +107,8 @@ typedef struct s_simulation
 	int					dongles_initialized;
 	long long			start_time;
 	t_priority_queue	queue;
-	pthread_mutex_t		queue_mutex;
-	long long			request_counter;
+	int					queue_initialized;
+	long long			next_request_order;
 }	t_simulation;
 
 /**** Parsing ****/
@@ -133,25 +132,29 @@ int			join_threads(t_simulation *simulation);
 void		*coder_routine(void *arg);
 void		coder_debug(t_coder *coder);
 void		coder_refactor(t_coder *coder);
-void		coder_compile(t_coder *coder);
+void		coder_compile(t_coder *coder, t_priority_queue *queue);
 
-/*** Coders utils ****/
+/**** Coders utils ****/
 void		set_last_compile_start(t_coder *coder, long long time);
 void		increment_compile_count(t_coder *coder);
-int			join_threads(t_simulation *simulation);
-int			coder_can_compile(t_coder *coder);
+
+/**** Compilation ****/
+int			coder_can_compile(t_coder *coder, t_priority_queue *queue);
+int			try_start_compile(t_coder *coder, t_priority_queue *queue);
+int			create_compile_request(t_coder *coder, t_priority_queue *queue);
 
 /**** Simulation monitoring ****/
 void		*monitor_routine(void *arg);
-long long	get_last_compile_start(t_coder *coder);
-int			get_compile_count(t_coder *coder);
 int			coder_has_burned_out(t_coder *coder);
 int			all_coders_finished(t_simulation *simulation);
+void		set_simulation_finished(t_simulation *simulation, int value);
+void		update_dongle_cooldown(t_dongle *dongle, t_simulation *simulation);
 
-/**** Helpers ****/
+/**** Utils ****/
 long long	get_time_ms(void);
 int			get_simulation_finished(t_simulation *simulation);
-void		set_simulation_finished(t_simulation *simulation, int value);
+long long	get_last_compile_start(t_coder *coder);
+int			get_compile_count(t_coder *coder);
 
 /**** Scheduler ****/
 int			request_has_priority(t_priority_queue *queue, t_request *a,
@@ -161,7 +164,7 @@ int			request_has_priority(t_priority_queue *queue, t_request *a,
 int			queue_init(t_priority_queue *queue, t_scheduler scheduler);
 int			queue_grow(t_priority_queue *queue);
 int			queue_push(t_priority_queue *queue, t_request request);
-int			queue_pop(t_priority_queue *queue, t_request *request);
+int			queue_pop(t_priority_queue *queue);
 void		queue_destroy(t_priority_queue *queue);
 
 /**** Heap operations ****/

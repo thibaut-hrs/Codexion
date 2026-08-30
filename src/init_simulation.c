@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 08:55:52 by thours            #+#    #+#             */
-/*   Updated: 2026/08/28 22:23:17 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/30 13:04:48 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,13 @@ int	init_simulation(t_simulation *simulation, t_config config)
 	simulation->start_time = get_time_ms();
 	simulation->threads_created = 0;
 	simulation->finished = 0;
+	simulation->next_request_order = 0;
 	if (pthread_mutex_init(&simulation->state_mutex, NULL) != 0)
 		return (simulation->state_mutex_initialized = 0, 0);
 	simulation->state_mutex_initialized = 1;
+	if (pthread_cond_init(&simulation->state_cond, NULL) != 0)
+		return (simulation->state_cond_initialized = 0, 0);
+	simulation->state_cond_initialized = 1;
 	if (!init_dongles(simulation))
 	{
 		destroy_simulation(simulation);
@@ -35,6 +39,13 @@ int	init_simulation(t_simulation *simulation, t_config config)
 		destroy_simulation(simulation);
 		return (0);
 	}
+	if (!queue_init(&simulation->queue, simulation->config.scheduler))
+	{
+		simulation->queue_initialized = 0;
+		destroy_simulation(simulation);
+		return (0);
+	}
+	simulation->queue_initialized = 1;
 	return (1);
 }
 
@@ -51,13 +62,6 @@ int	init_dongles(t_simulation *simulation)
 	i = 0;
 	while (i < simulation->config.number_of_coders)
 	{
-		simulation->dongles[i].cond_initialized = 0;
-		if (pthread_mutex_init(&simulation->dongles[i].mutex, NULL) != 0)
-			return (destroy_dongles(simulation), 0);
-		if (pthread_cond_init(&simulation->dongles[i].cond, NULL) != 0)
-			return (pthread_mutex_destroy(&simulation->dongles[i].mutex),
-				destroy_dongles(simulation), 0);
-		simulation->dongles[i].cond_initialized = 1;
 		simulation->dongles[i].id = i + 1;
 		simulation->dongles[i].state = DONGLE_FREE;
 		simulation->dongles_initialized++;

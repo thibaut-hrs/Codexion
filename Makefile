@@ -4,8 +4,9 @@ SRCS =	src/main.c \
 		src/parsing.c \
 		src/init_simulation.c \
 		src/destroy_simulation.c \
-		src/coder.c \
+		src/coder_routine.c \
 		src/coder_utils.c \
+		src/compilation.c \
 		src/monitor.c \
 		src/scheduler.c \
 		src/heap_operations.c \
