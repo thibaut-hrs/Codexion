@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 22:21:13 by thours            #+#    #+#             */
-/*   Updated: 2026/08/31 13:08:05 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/31 20:35:12 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,9 @@
 void	destroy_simulation(t_simulation *simulation)
 {
 	if (simulation->state_mutex_initialized)
-	{
 		pthread_mutex_destroy(&simulation->state_mutex);
-		simulation->state_mutex_initialized = 0;
-	}
 	if (simulation->state_cond_initialized)
-	{
 		pthread_cond_destroy(&simulation->state_cond);
-		simulation->state_cond_initialized = 0;
-	}
 	if (simulation->dongles)
 		destroy_dongles(simulation);
 	if (simulation->coders)
@@ -32,15 +26,9 @@ void	destroy_simulation(t_simulation *simulation)
 		simulation->coders = NULL;
 	}
 	if (simulation->queue_initialized)
-	{
 		queue_destroy(&simulation->queue);
-		simulation->queue_initialized = 0;
-	}
 	if (simulation->log_mutex_initialized)
-	{
 		pthread_mutex_destroy(&simulation->log_mutex);
-		simulation->log_mutex_initialized = 0;
-	}
 }
 
 void	destroy_dongles(t_simulation *simulation)
