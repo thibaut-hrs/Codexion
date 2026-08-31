@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 11:13:25 by thours            #+#    #+#             */
-/*   Updated: 2026/08/30 12:02:10 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/31 13:31:12 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int	coder_can_compile(t_coder *coder, t_priority_queue *queue)
 	if (is_simulation_finished(coder->simulation))
 		return (0);
 	if (queue->size == 0 || queue->requests[0].coder != coder)
+		return (0);
+	if (!coder->left_dongle || !coder->right_dongle)
 		return (0);
 	if (coder->left_dongle->state != DONGLE_FREE)
 		return (0);
@@ -47,7 +49,9 @@ int	try_start_compile(t_coder *coder, t_priority_queue *queue)
 			&simulation->state_mutex);
 	}
 	coder->left_dongle->state = DONGLE_HELD;
+	log_event_dongle(coder, coder->left_dongle);
 	coder->right_dongle->state = DONGLE_HELD;
+	log_event_dongle(coder, coder->right_dongle);
 	queue_pop(queue);
 	pthread_cond_broadcast(&simulation->state_cond);
 	pthread_mutex_unlock(&simulation->state_mutex);

@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 22:21:13 by thours            #+#    #+#             */
-/*   Updated: 2026/08/30 13:03:09 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/31 13:08:05 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ void	destroy_simulation(t_simulation *simulation)
 	{
 		queue_destroy(&simulation->queue);
 		simulation->queue_initialized = 0;
+	}
+	if (simulation->log_mutex_initialized)
+	{
+		pthread_mutex_destroy(&simulation->log_mutex);
+		simulation->log_mutex_initialized = 0;
 	}
 }
 

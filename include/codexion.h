@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/30 12:58:51 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/31 13:30:04 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,8 @@ typedef struct s_simulation
 	t_priority_queue	queue;
 	int					queue_initialized;
 	long long			next_request_order;
+	pthread_mutex_t		log_mutex;
+	int					log_mutex_initialized;
 }	t_simulation;
 
 /**** Parsing ****/
@@ -137,6 +139,8 @@ void		coder_compile(t_coder *coder, t_priority_queue *queue);
 /**** Coders utils ****/
 void		set_last_compile_start(t_coder *coder, long long time);
 void		increment_compile_count(t_coder *coder);
+void		log_event(t_coder *coder, const char *message);
+void		log_event_dongle(t_coder *coder, t_dongle *dongle);
 
 /**** Compilation ****/
 int			coder_can_compile(t_coder *coder, t_priority_queue *queue);

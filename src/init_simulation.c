@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 08:55:52 by thours            #+#    #+#             */
-/*   Updated: 2026/08/30 13:04:48 by thours           ###   ########.fr       */
+/*   Updated: 2026/08/31 13:08:42 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,21 @@ int	init_simulation(t_simulation *simulation, t_config config)
 		return (simulation->state_cond_initialized = 0, 0);
 	simulation->state_cond_initialized = 1;
 	if (!init_dongles(simulation))
-	{
-		destroy_simulation(simulation);
-		return (0);
-	}
+		return (destroy_simulation(simulation), 0);
 	if (!init_coders(simulation))
-	{
-		destroy_simulation(simulation);
-		return (0);
-	}
+		return (destroy_simulation(simulation), 0);
 	if (!queue_init(&simulation->queue, simulation->config.scheduler))
 	{
 		simulation->queue_initialized = 0;
-		destroy_simulation(simulation);
-		return (0);
+		return (destroy_simulation(simulation), 0);
 	}
 	simulation->queue_initialized = 1;
+	if (pthread_mutex_init(&simulation->log_mutex, NULL) != 0)
+	{
+		simulation->log_mutex_initialized = 0;
+		return (destroy_simulation(simulation), 0);
+	}
+	simulation->log_mutex_initialized = 1;
 	return (1);
 }
 
@@ -85,9 +84,13 @@ int	init_coders(t_simulation *simulation)
 		simulation->coders[i].id = i + 1;
 		simulation->coders[i].state = STATE_DEBUGGING;
 		simulation->coders[i].left_dongle = &simulation->dongles[i];
-		simulation->coders[i].right_dongle = &simulation->dongles[
-			(i + 1) % simulation->config.number_of_coders
-		];
+		simulation->coders[i].left_dongle = &simulation->dongles[i];
+		if (simulation->config.number_of_coders == 1)
+			simulation->coders[i].right_dongle = NULL;
+		else
+			simulation->coders[i].right_dongle = &simulation->dongles[
+				(i + 1) % simulation->config.number_of_coders
+			];
 		simulation->coders[i].last_compile_start = simulation->start_time;
 		simulation->coders[i].compile_count = 0;
 		simulation->coders[i].simulation = simulation;
