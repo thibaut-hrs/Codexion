@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 18:22:06 by thours            #+#    #+#             */
-/*   Updated: 2026/08/30 13:08:37 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/01 11:40:19 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ int	parse_positive_ll(char *str, long long *value)
 		result = result * 10 + digit;
 		i++;
 	}
-	// if (result == 0)
-	// 	return (0);
 	*value = result;
 	return (1);
 }
@@ -81,8 +79,6 @@ int	parse_positive_int(char *str, int *value)
 		result = result * 10 + digit;
 		i++;
 	}
-	// if (result == 0)
-	// 	return (0);
 	*value = result;
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 10:17:34 by thours            #+#    #+#             */
-/*   Updated: 2026/08/31 13:26:41 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/01 11:32:34 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ void	coder_refactor(t_coder *coder)
 
 void	coder_compile(t_coder *coder, t_priority_queue *queue)
 {
-	long long	cooldown = coder->simulation->config.dongle_cooldown;
+	long long	cooldown;
 
+	cooldown = coder->simulation->config.dongle_cooldown;
 	if (!create_compile_request(coder, queue))
 		return ;
 	if (!try_start_compile(coder, queue))

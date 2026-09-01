@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 22:26:47 by thours            #+#    #+#             */
-/*   Updated: 2026/08/31 13:30:14 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/01 11:33:31 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	increment_compile_count(t_coder *coder)
 void	log_event(t_coder *coder, const char *message)
 {
 	pthread_mutex_t	log_mutex;
-	
+
 	log_mutex = coder->simulation->log_mutex;
 	pthread_mutex_lock(&log_mutex);
 	printf("%lld %d %s\n",
@@ -40,7 +40,7 @@ void	log_event(t_coder *coder, const char *message)
 void	log_event_dongle(t_coder *coder, t_dongle *dongle)
 {
 	pthread_mutex_t	log_mutex;
-	
+
 	log_mutex = coder->simulation->log_mutex;
 	pthread_mutex_lock(&log_mutex);
 	printf("%lld %d has taken dongle %d\n",

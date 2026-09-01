@@ -6,13 +6,13 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/29 11:13:25 by thours            #+#    #+#             */
-/*   Updated: 2026/08/31 13:31:12 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/01 11:34:42 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
 
-static int is_simulation_finished(t_simulation *simulation)
+static int	is_simulation_finished(t_simulation *simulation)
 {
 	return (simulation->finished);
 }

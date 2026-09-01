@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 08:55:52 by thours            #+#    #+#             */
-/*   Updated: 2026/08/31 20:39:33 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/01 11:38:54 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,7 @@ int	init_coders(t_simulation *simulation)
 	int	i;
 
 	simulation->coders = malloc(
-			sizeof(t_coder) * simulation->config.number_of_coders
-			);
+			sizeof(t_coder) * simulation->config.number_of_coders);
 	if (!simulation->coders)
 		return (0);
 	i = 0;
@@ -92,8 +91,7 @@ int	init_coders(t_simulation *simulation)
 			simulation->coders[i].right_dongle = NULL;
 		else
 			simulation->coders[i].right_dongle = &simulation->dongles[
-				(i + 1) % simulation->config.number_of_coders
-			];
+				(i + 1) % simulation->config.number_of_coders];
 		simulation->coders[i].last_compile_start = simulation->start_time;
 		simulation->coders[i].compile_count = 0;
 		simulation->coders[i].simulation = simulation;

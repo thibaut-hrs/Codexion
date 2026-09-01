@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 12:01:55 by thours            #+#    #+#             */
-/*   Updated: 2026/08/30 13:12:43 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/01 11:39:51 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,7 @@ void	*monitor_routine(void *arg)
 		}
 		update_dongle_cooldown(simulation->dongles, simulation);
 		if (all_coders_finished(simulation))
-		{
 			return (set_simulation_finished(simulation, 1), NULL);
-		}
 		usleep(1000);
 	}
 	return (NULL);
