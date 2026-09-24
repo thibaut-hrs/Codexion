@@ -148,12 +148,11 @@ When the simulation ends because of burnout or successful completion, waiting th
 
 ### Documentation
 
-- POSIX threads manual pages: `pthread_create(3)`, `pthread_join(3)`
-- POSIX mutex manual pages: `pthread_mutex_init(3)`, `pthread_mutex_lock(3)`
-- POSIX condition variable manual pages: `pthread_cond_init(3)`, `pthread_cond_wait(3)`, `pthread_cond_broadcast(3)`
-- Memory management manual pages: `malloc(3)`, `realloc(3)`
+- POSIX threads manual pages
+- POSIX mutex manual pages
+- POSIX condition variable manual pages`
+- Memory management manual pages
 - 42 Norm documentation
-- Codexion project subject and evaluation guidelines
 
 ### AI usage
 

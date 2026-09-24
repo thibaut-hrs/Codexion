@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 08:55:52 by thours            #+#    #+#             */
-/*   Updated: 2026/09/01 11:38:54 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/24 14:16:02 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ int	init_coders(t_simulation *simulation)
 	{
 		simulation->coders[i].id = i + 1;
 		simulation->coders[i].state = STATE_DEBUGGING;
-		simulation->coders[i].left_dongle = &simulation->dongles[i];
 		simulation->coders[i].left_dongle = &simulation->dongles[i];
 		if (simulation->config.number_of_coders == 1)
 			simulation->coders[i].right_dongle = NULL;

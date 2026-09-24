@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 15:50:48 by thours            #+#    #+#             */
-/*   Updated: 2026/08/31 13:30:04 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/24 19:25:04 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,9 +141,9 @@ void		set_last_compile_start(t_coder *coder, long long time);
 void		increment_compile_count(t_coder *coder);
 void		log_event(t_coder *coder, const char *message);
 void		log_event_dongle(t_coder *coder, t_dongle *dongle);
+int			has_free_dongles(t_coder *coder);
 
 /**** Compilation ****/
-int			coder_can_compile(t_coder *coder, t_priority_queue *queue);
 int			try_start_compile(t_coder *coder, t_priority_queue *queue);
 int			create_compile_request(t_coder *coder, t_priority_queue *queue);
 
@@ -163,12 +163,13 @@ int			get_compile_count(t_coder *coder);
 /**** Scheduler ****/
 int			request_has_priority(t_priority_queue *queue, t_request *a,
 				t_request *b);
+int			find_best_available_request(t_priority_queue *queue);
 
 /**** Queue operations ****/
 int			queue_init(t_priority_queue *queue, t_scheduler scheduler);
 int			queue_grow(t_priority_queue *queue);
 int			queue_push(t_priority_queue *queue, t_request request);
-int			queue_pop(t_priority_queue *queue);
+int			queue_remove(t_priority_queue *queue, int index);
 void		queue_destroy(t_priority_queue *queue);
 
 /**** Heap operations ****/

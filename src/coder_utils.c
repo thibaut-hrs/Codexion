@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 22:26:47 by thours            #+#    #+#             */
-/*   Updated: 2026/09/01 11:33:31 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/24 17:37:01 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,12 @@ void	log_event_dongle(t_coder *coder, t_dongle *dongle)
 	printf("%lld %d has taken dongle %d\n",
 		get_time_ms() - coder->simulation->start_time, coder->id, dongle->id);
 	pthread_mutex_unlock(&log_mutex);
+}
+
+int	has_free_dongles(t_coder *coder)
+{
+	if (!coder->left_dongle || !coder->right_dongle)
+		return (0);
+	return (coder->left_dongle->state == DONGLE_FREE
+		&& coder->right_dongle->state == DONGLE_FREE);
 }

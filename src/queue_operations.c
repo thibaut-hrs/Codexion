@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/28 17:55:49 by thours            #+#    #+#             */
-/*   Updated: 2026/09/01 11:41:04 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/24 19:27:14 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,22 @@ int	queue_push(t_priority_queue *queue, t_request request)
 	return (1);
 }
 
-int	queue_pop(t_priority_queue *queue)
+int	queue_remove(t_priority_queue *queue, int index)
 {
-	if (queue->size == 0)
+	if (index < 0 || index >= queue->size)
 		return (0);
-	queue->requests[0] = queue->requests[queue->size - 1];
+	if (index == queue->size - 1)
+	{
+		queue->size--;
+		return (1);
+	}
+	queue->requests[index] = queue->requests[queue->size - 1];
 	queue->size--;
-	heap_down(queue, 0);
+	if (index > 0 && request_has_priority(
+			queue, &queue->requests[index], &queue->requests[(index - 1) / 2]))
+		heap_up(queue, index);
+	else
+		heap_down(queue, index);
 	return (1);
 }
 

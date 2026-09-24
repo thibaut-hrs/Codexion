@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/26 19:33:13 by thours            #+#    #+#             */
-/*   Updated: 2026/08/28 17:54:25 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/24 14:35:48 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ void	heap_up(t_priority_queue *queue, int index)
 
 	while (index != 0)
 	{
-		parent_index = (index - 1) / 2;
+		if (index == 1 || index == 2)
+			parent_index = 0;
+		else
+			parent_index = (index - 1) / 2;
 		if (!request_has_priority(queue,
 				&queue->requests[index],
 				&queue->requests[parent_index]))

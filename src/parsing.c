@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 18:22:06 by thours            #+#    #+#             */
-/*   Updated: 2026/09/01 11:40:19 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/24 14:06:15 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	parse_positive_ll(char *str, long long *value)
 
 	i = 0;
 	result = 0;
-	if (!str[0])
+	if (!str || !str[0])
 		return (0);
 	while (str[i])
 	{
@@ -67,7 +67,7 @@ int	parse_positive_int(char *str, int *value)
 
 	i = 0;
 	result = 0;
-	if (!str[0])
+	if (!str || !str[0])
 		return (0);
 	while (str[i])
 	{
