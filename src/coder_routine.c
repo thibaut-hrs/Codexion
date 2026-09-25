@@ -6,7 +6,7 @@
 /*   By: thours <thours@student.42belgium.be>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/21 10:17:34 by thours            #+#    #+#             */
-/*   Updated: 2026/09/01 11:32:34 by thours           ###   ########.fr       */
+/*   Updated: 2026/09/25 12:40:09 by thours           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 void	*coder_routine(void *arg)
 {
 	t_coder	*coder;
+	int		compiles_required;
 
 	coder = (t_coder *)arg;
-	while (!get_simulation_finished(coder->simulation))
+	compiles_required = coder->simulation->config.number_of_compiles_required;
+	while (!get_simulation_finished(coder->simulation)
+		&& coder->compile_count < compiles_required)
 	{
 		coder_debug(coder);
 		if (get_simulation_finished(coder->simulation))
